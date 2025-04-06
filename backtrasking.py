@@ -16,48 +16,37 @@ def inizializzazione_domains(domains):
 
 # Ogni valore iniziale deve avere un dominio con un solo elemento
 # Riga 0
-
 def val_domains(domains):
-    domains[(0, 2)] = {3}
-    domains[(0, 4)] = {2}
-    domains[(0, 6)] = {6}
-
-    domains[(1, 0)] = {9}
-    domains[(1, 3)] = {3}
-    domains[(1, 5)] = {5}
-    domains[(1, 8)] = {1}
-
-    domains[(2, 2)] = {1}
-    domains[(2, 3)] = {8}
-    domains[(2, 5)] = {6}
-    domains[(2, 6)] = {4}
-
-    domains[(3, 2)] = {8}
-    domains[(3, 3)] = {1}
-    domains[(3, 5)] = {2}
-    domains[(3, 6)] = {9}
-
-    domains[(4, 0)] = {7}
-    domains[(4, 8)] = {8}
-
-    domains[(5, 2)] = {6}
-    domains[(5, 3)] = {7}
-    domains[(5, 5)] = {8}
-    domains[(5, 6)] = {2}
-
-    domains[(6, 2)] = {2}
-    domains[(6, 3)] = {6}
-    domains[(6, 5)] = {9}
-    domains[(6, 6)] = {5}
-
-    domains[(7, 0)] = {8}
-    domains[(7, 3)] = {2}
-    domains[(7, 5)] = {3}
-    domains[(7, 8)] = {9}
-
-    domains[(8, 2)] = {5}
-    domains[(8, 4)] = {1}
-    domains[(8, 6)] = {3}
+    # RIGA 0
+    domains[(0, 0)] = {8}
+    # RIGA 1
+    domains[(1, 2)] = {3}
+    domains[(1, 3)] = {6}
+    # RIGA 2
+    domains[(2, 1)] = {7}
+    domains[(2, 4)] = {9}
+    domains[(2, 6)] = {2}
+    # RIGA 3
+    domains[(3, 1)] = {5}
+    domains[(3, 5)] = {7}
+    # RIGA 4
+    domains[(4, 4)] = {4}
+    domains[(4, 5)] = {5}
+    domains[(4, 6)] = {7}
+    # RIGA 5
+    domains[(5, 3)] = {1}
+    domains[(5, 7)] = {3}
+    # RIGA 6
+    domains[(6, 2)] = {1}
+    domains[(6, 7)] = {6}
+    domains[(6, 8)] = {8}
+    # RIGA 7
+    domains[(7, 2)] = {8}
+    domains[(7, 3)] = {5}
+    domains[(7, 7)] = {1}
+    # RIGA 8
+    domains[(8, 1)] = {9}
+    domains[(8, 6)] = {4}
 
 
 # Stampa della griglia in modo leggibile
@@ -151,6 +140,14 @@ def remove_inc_val(domains, xi, xj):
 
     return rimosso
 
+def calcolo_celle_mancanti():
+    val = 0
+    for xi in domains:
+        if len(domains[xi]) != 1:
+            val += 1
+    print (f"{val} celle da esplorare")
+    return val
+
 
 def ricerca_backtracking(domains):
     assegnamento = {}
@@ -158,9 +155,21 @@ def ricerca_backtracking(domains):
         if len(dominio) == 1:
             assegnamento[cella] = {next(iter(dominio))}
 
-    return backtracking(domains, assegnamento)
+    tentativi = 0
+    while True:
+        print(f"\nTentativo numero {tentativi}")
+        risultato = backtracking(domains, assegnamento, livello=0)
+        if risultato == "fallimento":
+            return "fallimento"
+        elif risultato != "interrotto":
+            return risultato
+        tentativi += 1
 
-def backtracking(domains, assegnamento):
+def backtracking(domains, assegnamento, livello=0):
+    da_assegnare = 81 -len(assegnamento)
+    
+    print(f"{' ' * livello*2}↳ Livello ricorsione: {livello}, celle assegnate: {len(assegnamento)}")
+    
     if len(assegnamento) == 81:
         return assegnamento
 
@@ -178,18 +187,19 @@ def backtracking(domains, assegnamento):
                 #print(f"{key}: {value}" + "\t")
             domains_copy[var] = {valore}
             
-            queue_copy = deepcopy(queue)
+            queue_copy = deque([(xk, var) for xk in peers[var]])
 
             #queue_new = deque([(xi, xj) for xi in domains_copy for xj in peers[xi]])  
 
             if AC_3(peers, domains_copy,queue_copy):
                 #print("Iterazione AC-3 SUCCESSO")
-                risultato = backtracking(domains_copy, assegnamento_copy)
+                risultato = backtracking(domains_copy, assegnamento_copy,livello + 1)
 
-                if risultato != 'fallimento':
+                if risultato == "interrotto":
+                    return "interrotto"
+                elif risultato != 'fallimento':
                     return risultato
-            else:
-                print("AC-3 non è riuscito a ridurre il dominio, si passa alla scelta di un'altro valore")
+           
             
             del assegnamento_copy[var]
 
@@ -244,9 +254,16 @@ if __name__ == "__main__":
     #print("Griglia finale:")
     #print_grid(domains)
 
+    ac_3 = True
     AC_3(peers, domains, queue)
-    print("AC-3 non è riuscito a risolvere il problema.")
+    for xi in domains:
+        if len(domains[xi])!= 1:
+            ac_3 = False
 
+    if ac_3 == False:
+        print("AC-3 non è riuscito a risolvere il problema.")
+        print("Griglia dopo AC-3:")
+        print_grid(domains)
     #for key, value in domains.items():
         #print(f"{key}: {value}" + "\t" + "\n")
   
@@ -258,3 +275,5 @@ if __name__ == "__main__":
         print_grid(soluzione)
     else:
         print("Nessuna soluzione trovata.")
+
+
