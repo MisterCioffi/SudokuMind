@@ -57,6 +57,5 @@ Questo approccio, che combina la consistenza degli archi (AC-3) con la ricerca t
 
 ---
 
-Se hai bisogno di ulteriori chiarimenti o spiegazioni, fammi sapere!
 
 
