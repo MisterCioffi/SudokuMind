@@ -1,4 +1,4 @@
-# Algortimo IA per la Risoluzione del Sudoku con AC-3 e Backtracking
+# Algoritmo IA per la Risoluzione del Sudoku con AC-3 e Backtracking
 
 Questo progetto riguarda la risoluzione di un puzzle Sudoku utilizzando due tecniche di intelligenza artificiale: **AC-3 (Arc-Consistency 3)** e **Backtracking**. Il Sudoku è un gioco di logica che richiede di completare una griglia 9x9 con numeri da 1 a 9, rispettando alcune regole di coerenza: ogni numero deve apparire una sola volta per riga, colonna e blocco 3x3.
 
