@@ -155,7 +155,8 @@ def ricerca_backtracking(domains):
         if len(dominio) == 1:
             assegnamento[cella] = {next(iter(dominio))}
 
-    tentativi = 0
+    return backtracking(domains, assegnamento, livello=0)
+''' tentativi = 0
     while True:
         print(f"\nTentativo numero {tentativi}")
         risultato = backtracking(domains, assegnamento, livello=0)
@@ -163,12 +164,12 @@ def ricerca_backtracking(domains):
             return "fallimento"
         elif risultato != "interrotto":
             return risultato
-        tentativi += 1
+        tentativi += 1'''
 
 def backtracking(domains, assegnamento, livello=0):
-    da_assegnare = 81 -len(assegnamento)
+    #da_assegnare = 81 -len(assegnamento)
     
-    print(f"{' ' * livello*2}↳ Livello ricorsione: {livello}, celle assegnate: {len(assegnamento)}")
+    #print(f"{' ' * livello*2}↳ Livello ricorsione: {livello}, celle assegnate: {len(assegnamento)}")
     
     if len(assegnamento) == 81:
         return assegnamento
@@ -202,6 +203,7 @@ def backtracking(domains, assegnamento, livello=0):
            
             
             del assegnamento_copy[var]
+            del domains_copy[var]
 
     
     return "fallimento"
@@ -275,5 +277,8 @@ if __name__ == "__main__":
         print_grid(soluzione)
     else:
         print("Nessuna soluzione trovata.")
+
+
+
 
 
