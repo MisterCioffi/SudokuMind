@@ -1,4 +1,4 @@
-# Algortimo IA per la Risoluzione del Sudoku con AC-3 e Backtracking
+# Progetto IA per la Risoluzione del Sudoku con AC-3 e Backtracking
 
 Questo progetto riguarda la risoluzione di un puzzle Sudoku utilizzando due tecniche di intelligenza artificiale: **AC-3 (Arc-Consistency 3)** e **Backtracking**. Il Sudoku è un gioco di logica che richiede di completare una griglia 9x9 con numeri da 1 a 9, rispettando alcune regole di coerenza: ogni numero deve apparire una sola volta per riga, colonna e blocco 3x3.
 
@@ -16,15 +16,35 @@ Una volta che AC-3 ha ridotto i domini, si avvia la ricerca con **Backtracking**
 
 ### Struttura dei Dati
 
-Le variabili del Sudoku (ogni cella della griglia) sono rappresentate come coordinate (riga, colonna), e i loro domini (i valori possibili) sono gestiti come insiemi. I vincoli tra le variabili (riga, colonna, blocco 3x3) sono rappresentati attraverso un dizionario che indica i "peer" (i vicini) di ciascuna cella.
+La gestione del puzzle Sudoku avviene tramite due componenti principali:
 
-### Riduzione dei Domini con AC-3
+1. **Variabili e Domini**: Ogni cella del Sudoku è rappresentata come una coppia di coordinate `(r, c)` dove `r` è la riga e `c` è la colonna. I domini delle variabili sono rappresentati come un dizionario, in cui ogni chiave è la coppia `(r, c)` e il valore è un insieme di numeri possibili per quella cella.
 
-Inizialmente, il dominio di ogni variabile è l'insieme di numeri da 1 a 9. AC-3 viene applicato per ridurre i domini, assicurandosi che i numeri in un dominio siano coerenti con quelli già assegnati nelle celle adiacenti (righe, colonne e blocchi 3x3).
+    - La funzione `inizializzazione_domains` imposta inizialmente tutti i domini come l'insieme `{1, 2, 3, 4, 5, 6, 7, 8, 9}` per tutte le celle.
+    - La funzione `val_domains` modifica questi domini per riflettere i numeri già precompilati nel puzzle.
+
+    Ecco un esempio della struttura dei domini iniziali e personalizzati:
+
+    ```python
+    domains[(0, 0)] = {8}
+    domains[(1, 2)] = {3}
+    domains[(1, 3)] = {6}
+    domains[(2, 1)] = {7}
+    domains[(2, 4)] = {9}
+    # Altri valori per altre celle
+    ```
+
+2. **Peer (Vicini)**: Ogni cella ha dei "peer", ossia altre celle che sono vincolate dalla stessa riga, colonna o blocco 3x3. La funzione `set_peers` costruisce un dizionario chiamato `peers`, in cui ogni chiave è una cella e il valore è l'insieme delle celle adiacenti in riga, colonna e blocco 3x3.
+
+    - Per esempio, per la cella `(0, 0)`, i peer saranno tutte le altre celle nella stessa riga (eccetto `(0, 0)`), nella stessa colonna, e nel blocco 3x3.
+
+3. **Rimozione di Valori Incoerenti**: La funzione `remove_inc_val` è utilizzata per rimuovere valori che diventano inconsistente a causa di una modifica in una cella vicina. Quando un valore in una cella è fissato, i domini delle celle adiacenti (i peer) vengono aggiornati per rimuovere quel valore, garantendo che i vincoli di riga, colonna e blocco siano rispettati.
+
+4. **Eliminazione Incoerente con AC-3**: Durante l'esecuzione dell'algoritmo AC-3, le celle vengono esplorate e i domini ridotti fino a che non si ottiene una soluzione consistente o fino a quando non si scopre che non esistono più valori validi per una cella (fallimento).
 
 ### Selezione della Variabile con Dominio Minimo
 
-Durante la fase di ricerca con backtracking, la scelta della variabile da assegnare segue l'euristica **Minimum Remaining Values (MRV)**, che seleziona la variabile con il dominio più piccolo. Questo approccio mira a ridurre il numero di passaggi necessari per risolvere il puzzle, perché si affrontano prima le variabili con meno opzioni disponibili.
+Durante la fase di ricerca con backtracking, la scelta della variabile da assegnare segue l'euristica **Minimum Remaining Values (MRV)**. Questo approccio sceglie la variabile che ha il dominio più piccolo, ossia quella che ha il minor numero di valori possibili. Questo aiuta a ridurre lo spazio di ricerca, affrontando prima le variabili più difficili da risolvere.
 
 ## Vantaggi e Ottimizzazione
 
@@ -38,4 +58,5 @@ Questo approccio, che combina la consistenza degli archi (AC-3) con la ricerca t
 ---
 
 Se hai bisogno di ulteriori chiarimenti o spiegazioni, fammi sapere!
+
 
